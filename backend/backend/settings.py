@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 import dj_database_url
 
 
@@ -23,14 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower == 'true'
+DEBUG = config('DEBUG', default='False').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(" ")
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(" ")
-
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', '').split()
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', '').split()
 
 # Application definition
 
@@ -59,8 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS').split(" ")
-
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', '').split()
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -85,12 +84,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-database_url = os.environ.get('DATABASE_URL')
-if not database_url:
-    raise ValueError("The DATABASE_URL environment variable is not set.")
 DATABASES = {
-    'default': dj_database_url.parse(database_url, engine = 'django.db.backends.sqlite3')
-    
+    'default': dj_database_url.config(default=config('DATABASE_URL'))
 }
 
 
