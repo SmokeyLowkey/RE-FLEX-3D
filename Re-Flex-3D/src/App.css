@@ -1,0 +1,62 @@
+/* App.css */
+
+/* General styles for the entire app */
+.App {
+  height: 100vh; /* Full viewport height */
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+.canvas {
+  position: relative;
+  height: 100vh; /* Full viewport height */
+  width: 100vw;
+  z-index: 1;
+}
+/* Styles for the header and footer */
+.header, .footer {
+  background-color: #ffffff; /* Dark background for header and footer */
+  color: rgb(255, 0, 0); 
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* Styles for the main content area */
+.pane-content {
+  padding: 10px;
+  overflow: auto; /* Allows scrolling if the content overflows */
+  color: #ffffff; /* Dark background for header and footer */
+
+}
+
+/* Styles for ReflexElement */
+.reflex-element {
+  height: 100%; /* or other appropriate size */
+  width: 100%;
+  overflow: hidden; /* Prevents content from overflowing */
+  background-color: #ffffff; /* Dark background for header and footer */
+  color: #070707;
+  font-size: small;
+
+}
+
+/* Styles for ReflexSplitter */
+.reflex-splitter {
+  background-color: #888; /* Splitter color */
+  border: 1px solid #666; /* Splitter border */
+}
+
+/* Additional styles for resizing */
+.resizing {
+  pointer-events: none; /* Disables pointer events while resizing */
+}
+
+.gizmo-container{
+  position:absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  background-color: #ffffff;
+  width: 100px;
+  height: 100px;
+}
