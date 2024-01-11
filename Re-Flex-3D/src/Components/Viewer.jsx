@@ -35,6 +35,8 @@ const Viewer = React.memo(({
   const [selectedMeshUuid, setSelectedMeshUuid] = useState(null);
   const gizmoRef = useRef(null);
   const [explodedView, setExplodedView] = useState(0); // Slider value for exploded view
+  const [cameraYOffset, setCameraYOffset] = useState(0);
+
 
 
   useEffect(() => {
@@ -150,7 +152,7 @@ const Viewer = React.memo(({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
-    camera.position.set(10, 10, 10);
+    camera.position.set(80, 100, 20);
 
     const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
     renderer.setClearColor(0xf5f5f5, 0.5); // Set clear color to white
@@ -188,9 +190,11 @@ const Viewer = React.memo(({
     function onMouseMove(event) {
       const bounds = mountRef.current.getBoundingClientRect();
       
-      mouse.x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
-      mouse.y = -((event.clientY - bounds.top) / bounds.height) * 2 + 1;
+      mouse.x = (event.offsetX / bounds.width) * 2 - 1;
+      mouse.y = -(event.offsetY / bounds.height) * 2 + 1;
       
+      raycaster.params.Mesh.threshold = 0.1;
+
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(getVisibleObjects(), true);
 
@@ -208,8 +212,8 @@ const Viewer = React.memo(({
     function onDoubleClick(event) {
       event.preventDefault();
       const bounds = mountRef.current.getBoundingClientRect();
-      mouse.x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
-      mouse.y = -((event.clientY - bounds.top) / bounds.height) * 2 + 1;
+      mouse.x = (event.offsetX / bounds.width) * 2 - 1;
+      mouse.y = -(event.offsetY / bounds.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(getVisibleObjects(), true);
@@ -319,7 +323,7 @@ const Viewer = React.memo(({
     setExplodedView(0);
     // Additional code as needed
   }, [originalPositionsRef, sceneRef, setExplodedView]);
-
+  
   return (
     <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       <div ref={gizmoRef} className="gizmo-container">
@@ -345,6 +349,7 @@ const Viewer = React.memo(({
         value={explodedView} 
         onChange={(e) => setExplodedView(Number(e.target.value))}
       />
+      
     </div>
   );
 });

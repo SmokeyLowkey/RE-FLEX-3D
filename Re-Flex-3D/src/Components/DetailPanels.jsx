@@ -5,13 +5,13 @@ const MeshDetailsPanel = ({ selectedPartNumber, modelUrl}) => {
   const [meshDetails, setMeshDetails] = useState(null);
 
   useEffect(() => {
-    console.log("Effect executed in MeshDetailsPanel", { selectedPartNumber, modelUrl });
+    // console.log("Effect executed in MeshDetailsPanel", { selectedPartNumber, modelUrl });
     if (selectedPartNumber && modelUrl) {
-      console.log('Selected Part Number:', selectedPartNumber);
+      // console.log('Selected Part Number:', selectedPartNumber);
       
       const endpoint = determineEndpoint(modelUrl);
-      const fullUrl = `http://localhost:8000/api/${endpoint}/${selectedPartNumber}/`;
-      console.log("Fetching URL:", fullUrl); // Check the constructed URL
+      const fullUrl = `https://threedcatalog.onrender.com/api/${endpoint}/${selectedPartNumber}/`;
+      // console.log("Fetching URL:", fullUrl); // Check the constructed URL
       fetch(fullUrl)
         .then(response => {
           if (!response.ok) {

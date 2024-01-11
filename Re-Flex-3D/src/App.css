@@ -8,13 +8,15 @@
   flex-direction: column;
 }
 .canvas {
+  top: 50px;
+  margin: 0px;
   position: relative;
   height: 100vh; /* Full viewport height */
   width: 100vw;
-  z-index: 1;
 }
 /* Styles for the header and footer */
 .header, .footer {
+  top: 10px;
   background-color: #ffffff; /* Dark background for header and footer */
   color: rgb(255, 0, 0); 
   text-align: center;
@@ -31,9 +33,11 @@
 
 /* Styles for ReflexElement */
 .reflex-element {
-  height: 100%; /* or other appropriate size */
-  width: 100%;
-  overflow: hidden; /* Prevents content from overflowing */
+  height: 200%; /* or other appropriate size */
+  width: 200%;
+  margin: 0px;
+  padding: 0px;
+  /* overflow: hidden;  */
   background-color: #ffffff; /* Dark background for header and footer */
   color: #070707;
   font-size: small;

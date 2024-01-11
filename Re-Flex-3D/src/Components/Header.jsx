@@ -14,7 +14,7 @@ const Header = ({ onModelChange }) => {
         {/* Add your dropdown list here */}
         <select className="dropdown-list" onChange={handleDropdownChange}>
             <option value= 'select'>select a mechine</option>
-            <option value="http://localhost:8000/media/model333G/333G.glb">333 g</option>
+            <option value="https://threedcatalog.onrender.com/media/model333G/333G.glb">333G</option>
             {/* <option value="http://localhost:8000/models/model17G/excavator.glb">machine 2</option>
             <option value="http://localhost:8000/models/modelSK850/rideonskid_1.glb">Machine 3</option> */}
             {/* Add more options as needed */}
