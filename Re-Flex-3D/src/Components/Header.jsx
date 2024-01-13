@@ -1,12 +1,6 @@
 import React from 'react';
 import './Header.css';
 
-// const Header = ({ onModelChange }) => {
-//   const handleDropdownChange = (event) => {
-//     const newModelUrl = event.target.value;
-//     console.log('from drop down selected:', newModelUrl); // Add this log for debugging
-//     onModelChange(newModelUrl);
-//   };
 const Header = ({ onModelChange }) => {
   const handleDropdownChange = (event) => {
     const modelIdentifier = event.target.value;

@@ -24,7 +24,7 @@ const Viewer = React.memo(({
   centroidsRef, 
   originalPositionsRef,
 }) => {
-  console.log("Viewer - Received modelIdentifier:", modelIdentifier);
+  // console.log("Viewer - Received modelIdentifier:", modelIdentifier);
   // console.log('Viewer component rendering');
   const mountRef = useRef(null);
   const sceneRef = useRef(new THREE.Scene());
@@ -61,7 +61,7 @@ const Viewer = React.memo(({
 
   // Function to handle mesh selection
   const handleMeshSelection = useCallback((meshUuid) => {
-    console.log("Mesh selected with UUID:" ,meshUuid);
+    // console.log("Mesh selected with UUID:" ,meshUuid);
     if (!sceneRef.current) return;
   
     // Reset all meshes to their original materials and full opacity
@@ -75,11 +75,11 @@ const Viewer = React.memo(({
   
     let selectedObject = sceneRef.current.getObjectByProperty('uuid', meshUuid);
     if (selectedObject) {
-      console.log("Selected Object:", selectedObject);
-      console.log("Selected Object UserData:", selectedObject.userData);
+      // console.log("Selected Object:", selectedObject);
+      // console.log("Selected Object UserData:", selectedObject.userData);
 
       if (selectedObject.userData?.part_number) {
-        console.log("Part Number:", selectedObject.userData.part_number);
+        // console.log("Part Number:", selectedObject.userData.part_number);
         onPartNumberSelect(selectedObject.userData.part_number);
       }
       // Store the UUIDs of all child meshes if the selected object is a group

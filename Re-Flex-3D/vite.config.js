@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
 
+dotenv.config();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -9,6 +10,6 @@ export default defineConfig({
     include: ['@react-three/drei']
   },
   define:{
-    'process.env.MACHINE_ONE_URL':JSON.stringify(process.env.MACHINE_ONE_URL)
+    'process.env.RENDER_BASE_URL': JSON.stringify(process.env.RENDER_BASE_URL)
   }
 })

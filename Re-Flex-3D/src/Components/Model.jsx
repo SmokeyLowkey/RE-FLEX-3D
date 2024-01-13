@@ -71,7 +71,9 @@ const Model = ({
     
       try {
         // console.log("Fetching from URL:", `/api/get-signed-url/${modelIdentifier}`);
-        const response = await fetch(`http://localhost:8000/api/get-signed-url/${modelIdentifier}`, {
+        const baseUrl = import.meta.env.VITE_RENDER_BASE_URL;
+        // console.log("Base URL:", baseUrl);
+        const response = await fetch(`${baseUrl}/api/get-signed-url/${modelIdentifier}`, {
           method: 'GET',
           headers: {
             'Cache-Control': 'no-cache',
@@ -99,7 +101,7 @@ const Model = ({
           // console.log(`Loading model from URL: ${signedUrl}`);
           const loader = new GLTFLoader();
           loader.load(signedUrl, (gltf) => {
-            console.log("Model loaded successfully", gltf);
+            // console.log("Model loaded successfully", gltf);
             modelRef.current = gltf.scene;
             scene.add(gltf.scene);
     
@@ -136,7 +138,7 @@ const Model = ({
     // Cleanup function
     return () => {
       if (modelRef.current) {
-        console.log("Component unmounting, removing model from scene");
+        // console.log("Component unmounting, removing model from scene");
         scene.remove(modelRef.current); // Remove the model from the scene
         
         // Dispose of the model's resources

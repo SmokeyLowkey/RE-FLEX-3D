@@ -221,13 +221,13 @@ const ReflexAdvancedDemo = () => {
     setSelectedPartNumber(newPartNumber); // Update the selected part number state
   }, []);
   const onModelChange = (identifier) => {
-    console.log("Updating modelIdentifier in ReflexAdvancedDemo to:", modelIdentifier);
+    // console.log("Updating modelIdentifier in ReflexAdvancedDemo to:", modelIdentifier);
     setModelIdentifier(identifier);
   }; 
 
-  useEffect(() => {
-    console.log("ReflexAdvancedDemo - Current modelIdentifier:", modelIdentifier);
-  }, [modelIdentifier]);
+  // useEffect(() => {
+  //   console.log("ReflexAdvancedDemo - Current modelIdentifier:", modelIdentifier);
+  // }, [modelIdentifier]);
 
   return (
     <ReflexContainer orientation="horizontal">

@@ -7,11 +7,13 @@ const MeshDetailsPanel = ({ selectedPartNumber, modelIdentifier}) => {
   useEffect(() => {
     // console.log("Effect executed in MeshDetailsPanel", { selectedPartNumber, modelIdentifier });
     if (selectedPartNumber && modelIdentifier) {
-      console.log('Selected Part Number:', selectedPartNumber);
-      
+      // console.log('Selected Part Number:', selectedPartNumber);
+      const baseUrl = import.meta.env.VITE_RENDER_BASE_URL;
+      // console.log("Base URL:", baseUrl);
       const endpoint = determineEndpoint(modelIdentifier);
-      const fullUrl = `https://threedcatalog.onrender.com/api/${endpoint}/${selectedPartNumber}/`;
-      console.log("Fetching URL:", fullUrl); // Check the constructed URL
+      
+      const fullUrl = `${baseUrl}/api/${endpoint}/${selectedPartNumber}/`;
+      // console.log("Fetching URL:", fullUrl); // Check the constructed URL
       fetch(fullUrl)
         .then(response => {
           if (!response.ok) {
@@ -20,7 +22,7 @@ const MeshDetailsPanel = ({ selectedPartNumber, modelIdentifier}) => {
           return response.json();
         })
         .then(data => {
-          console.log('Fetched Data:', data);
+          // console.log('Fetched Data:', data);
           const detailedInfo = {
             name: data.part_name, // Adjust field name as per your API response
             part_number: data.part_number,
