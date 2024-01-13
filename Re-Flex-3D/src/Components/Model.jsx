@@ -60,17 +60,17 @@ const Model = ({
   // calculateCentroids(scene, centroidsRef);
 
   useEffect(() => {    
-    console.log("useEffect triggered with modelIdentifier:", modelIdentifier);
+    // console.log("useEffect triggered with modelIdentifier:", modelIdentifier);
     const fetchAndLoadModel = async () => {
       if (!scene || !renderer || !modelIdentifier) {
-        console.log("Required parameters for model loading are missing");
+        // console.log("Required parameters for model loading are missing");
         return;
       }
       
-      console.log("Attempting to fetch signed URL for modelIdentifier:", modelIdentifier);
+      // console.log("Attempting to fetch signed URL for modelIdentifier:", modelIdentifier);
     
       try {
-        console.log("Fetching from URL:", `/api/get-signed-url/${modelIdentifier}`);
+        // console.log("Fetching from URL:", `/api/get-signed-url/${modelIdentifier}`);
         const response = await fetch(`http://localhost:8000/api/get-signed-url/${modelIdentifier}`, {
           method: 'GET',
           headers: {
@@ -87,16 +87,16 @@ const Model = ({
 
     
         if (signedUrl) {
-          console.log(`Signed URL received: ${signedUrl}`);
+          // console.log(`Signed URL received: ${signedUrl}`);
           // Your existing logic to remove the current model
           if (modelRef.current) {
-            console.log("Removing existing model from scene");
+            // console.log("Removing existing model from scene");
             scene.remove(modelRef.current);
             modelRef.current = null;
           }
     
           // Load the model with the signed URL
-          console.log(`Loading model from URL: ${signedUrl}`);
+          // console.log(`Loading model from URL: ${signedUrl}`);
           const loader = new GLTFLoader();
           loader.load(signedUrl, (gltf) => {
             console.log("Model loaded successfully", gltf);

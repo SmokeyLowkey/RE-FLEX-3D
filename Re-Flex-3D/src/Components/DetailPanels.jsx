@@ -7,7 +7,7 @@ const MeshDetailsPanel = ({ selectedPartNumber, modelIdentifier}) => {
   useEffect(() => {
     // console.log("Effect executed in MeshDetailsPanel", { selectedPartNumber, modelIdentifier });
     if (selectedPartNumber && modelIdentifier) {
-      // console.log('Selected Part Number:', selectedPartNumber);
+      console.log('Selected Part Number:', selectedPartNumber);
       
       const endpoint = determineEndpoint(modelIdentifier);
       const fullUrl = `https://threedcatalog.onrender.com/api/${endpoint}/${selectedPartNumber}/`;

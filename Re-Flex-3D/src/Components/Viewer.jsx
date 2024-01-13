@@ -36,9 +36,6 @@ const Viewer = React.memo(({
   const [selectedMeshUuid, setSelectedMeshUuid] = useState(null);
   const gizmoRef = useRef(null);
   const [explodedView, setExplodedView] = useState(0); // Slider value for exploded view
-  const [cameraYOffset, setCameraYOffset] = useState(0);
-
-
 
   useEffect(() => {
     // Function to remove existing gizmo
@@ -64,6 +61,7 @@ const Viewer = React.memo(({
 
   // Function to handle mesh selection
   const handleMeshSelection = useCallback((meshUuid) => {
+    console.log("Mesh selected with UUID:" ,meshUuid);
     if (!sceneRef.current) return;
   
     // Reset all meshes to their original materials and full opacity
@@ -77,6 +75,13 @@ const Viewer = React.memo(({
   
     let selectedObject = sceneRef.current.getObjectByProperty('uuid', meshUuid);
     if (selectedObject) {
+      console.log("Selected Object:", selectedObject);
+      console.log("Selected Object UserData:", selectedObject.userData);
+
+      if (selectedObject.userData?.part_number) {
+        console.log("Part Number:", selectedObject.userData.part_number);
+        onPartNumberSelect(selectedObject.userData.part_number);
+      }
       // Store the UUIDs of all child meshes if the selected object is a group
       const childUuids = new Set();
       if (selectedObject.type === 'Group'|| selectedObject.children.length > 0) {

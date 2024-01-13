@@ -295,7 +295,7 @@ const ReflexAdvancedDemo = () => {
           
           {/* Right Pane */}
           <ReflexElement {...resizeProps} className='reflex-element' style={{ overflowY: 'auto', overflowX: 'auto', height: 'calc(100vh - YourHeaderAndFooterHeight)' }}>
-            <MeshDetailsPanel selectedPartNumber={selectedPartNumber} modelUrl={modelUrl}/>
+            <MeshDetailsPanel selectedPartNumber={selectedPartNumber} modelIdentifier={modelIdentifier}/>
           </ReflexElement>
         
         </ReflexContainer>
