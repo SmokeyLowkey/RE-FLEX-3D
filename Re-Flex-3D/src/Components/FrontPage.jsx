@@ -25,8 +25,9 @@ const ReflexAdvancedDemo = () => {
   const originalPositionsRef = useRef(new Map());
   const [searchQuery, setSearchQuery] = useState('');
   const [autocompleteOptions, setAutocompleteOptions] = useState([]);
+  const [modelIdentifier, setModelIdentifier] = useState("");
 
-
+  
   useEffect(() => {
    
     setHierarchyData([]);
@@ -219,12 +220,20 @@ const ReflexAdvancedDemo = () => {
     // console.log('Selected part number:', newPartNumber);
     setSelectedPartNumber(newPartNumber); // Update the selected part number state
   }, []);
+  const onModelChange = (identifier) => {
+    console.log("Updating modelIdentifier in ReflexAdvancedDemo to:", modelIdentifier);
+    setModelIdentifier(identifier);
+  }; 
+
+  useEffect(() => {
+    console.log("ReflexAdvancedDemo - Current modelIdentifier:", modelIdentifier);
+  }, [modelIdentifier]);
 
   return (
     <ReflexContainer orientation="horizontal">
       {/* Header */}
       <ReflexElement className="header" flex={0.1}>
-        <Header onModelChange={setModelUrl}/>
+        <Header onModelChange={onModelChange}/>
       </ReflexElement>
       
       {/* Main Content */}
@@ -264,8 +273,8 @@ const ReflexAdvancedDemo = () => {
           {/* Middle Pane */}
           <ReflexElement flex={0.5} {...resizeProps} className='reflex-element'>
           <div style={{ width: '100%', height: '100%' }}>
+          {modelIdentifier && (
           <Viewer 
-            modelUrl ={modelUrl}
             setHierarchyData={setHierarchyDataMemoized}
             onMeshSelect={setSelectedMesh}
             selectedMesh={selectedMesh}
@@ -274,9 +283,11 @@ const ReflexAdvancedDemo = () => {
             checked = {checked}
             centroidsRef={centroidsRef}
             originalPositionsRef = {originalPositionsRef}
+            modelIdentifier={modelIdentifier}
             >
            
           </Viewer>
+          )}
           </div>
           </ReflexElement >
           

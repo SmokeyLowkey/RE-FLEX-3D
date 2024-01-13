@@ -1,18 +1,13 @@
 from rest_framework import serializers
-from .models import Parts333G, Parts17G, PartsSK850, GLBFile333G
+from .models import Parts333G, Parts17G, PartsSK850
 
-class GLBFile333GSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GLBFile333G
-        fields = ['id', 'file']
 
 
 class Parts333GSerializer(serializers.ModelSerializer):
-    glb_file = GLBFile333GSerializer()
     
     class Meta:
         model = Parts333G
-        fields = ['id', 'part_number', 'part_name', 'quantity', 'description', 'glb_file']
+        fields = ['id', 'part_number', 'part_name', 'quantity', 'description']
 
 class Parts17GSerializer(serializers.ModelSerializer):
     class Meta:

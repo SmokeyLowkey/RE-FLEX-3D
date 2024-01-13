@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 
-const MeshDetailsPanel = ({ selectedPartNumber, modelUrl}) => {
+const MeshDetailsPanel = ({ selectedPartNumber, modelIdentifier}) => {
   const [meshDetails, setMeshDetails] = useState(null);
 
   useEffect(() => {
-    // console.log("Effect executed in MeshDetailsPanel", { selectedPartNumber, modelUrl });
-    if (selectedPartNumber && modelUrl) {
+    // console.log("Effect executed in MeshDetailsPanel", { selectedPartNumber, modelIdentifier });
+    if (selectedPartNumber && modelIdentifier) {
       // console.log('Selected Part Number:', selectedPartNumber);
       
-      const endpoint = determineEndpoint(modelUrl);
+      const endpoint = determineEndpoint(modelIdentifier);
       const fullUrl = `https://threedcatalog.onrender.com/api/${endpoint}/${selectedPartNumber}/`;
-      // console.log("Fetching URL:", fullUrl); // Check the constructed URL
+      console.log("Fetching URL:", fullUrl); // Check the constructed URL
       fetch(fullUrl)
         .then(response => {
           if (!response.ok) {
@@ -31,12 +31,11 @@ const MeshDetailsPanel = ({ selectedPartNumber, modelUrl}) => {
         })
         .catch(error => console.error('Error fetching mesh details:', error));
     }
-  }, [selectedPartNumber, modelUrl]);
+  }, [selectedPartNumber, modelIdentifier]);
 
   // Function to determine the API endpoint based on the model URL
-  const determineEndpoint = (url) => {
-    const modelName = url.match(/model(\d+)[A-Z]/i)[1]; // Extract the model number
-    return `parts${modelName}g`; // Construct the endpoint, like 'parts333g'
+  const determineEndpoint = (modelIdentifier) => {
+    return `parts${modelIdentifier.toLowerCase()}`; // Converts '333G' to 'parts333g'
   };
 
   return (

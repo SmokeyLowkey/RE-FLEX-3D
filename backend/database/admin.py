@@ -1,9 +1,6 @@
 from django.contrib import admin
-from .models import Parts333G, Parts17G, PartsSK850,GLBFile333G
+from .models import Parts333G, Parts17G, PartsSK850
 
-@admin.register(GLBFile333G)
-class GLBFileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'file']
 
 @admin.register(Parts333G)
 class Parts333GAdmin(admin.ModelAdmin):

@@ -9,11 +9,11 @@ const Model = ({
   scene, 
   renderer, 
   setHierarchy, 
-  modelUrl, 
   checked, 
   setIsModelLoaded, 
   explodedView,
-  originalPositionsRef
+  originalPositionsRef,
+  modelIdentifier,
 }) => {
   const modelRef = useRef(null);  // Add this line
   const centroidsRef = useRef(new Map());
@@ -59,76 +59,69 @@ const Model = ({
   // Initial call for the scene
   // calculateCentroids(scene, centroidsRef);
 
-  useEffect(() => {
-    if (!scene || !renderer || !modelUrl ) return;
+  useEffect(() => {    
+    console.log("useEffect triggered with modelIdentifier:", modelIdentifier);
+    const fetchAndLoadModel = async () => {
+      if (!scene || !renderer || !modelIdentifier) {
+        console.log("Required parameters for model loading are missing");
+        return;
+      }
+      
+      console.log("Attempting to fetch signed URL for modelIdentifier:", modelIdentifier);
     
-    // Remove existing model if present
-    if (modelRef.current) {
-      // console.log("Removing existing model from scene");
-      scene.remove(modelRef.current);
-      modelRef.current = null;
-    }
-    // console.log(`Loading model from URL: ${modelUrl}`);
-    const loader = new GLTFLoader();
-    loader.load(modelUrl, (gltf) => {
-      // console.log(gltf);
-      modelRef.current = gltf.scene;
-      scene.add(gltf.scene);
-      // Reset centroidsRef for new model
-      centroidsRef.current.clear();
-      // console.log("Model loaded:", gltf.scene);
-      gltf.scene.traverse((node) => {
-        if (node.isMesh) {
-            node.visible = true; // Set all meshes to visible initially
-            originalPositionsRef.current.set(node.uuid, node.position.clone());
-            // console.log(`Initial visibility set for mesh (UUID: ${node.uuid}): true`);
-            // node.layers.enable(0);
-            // node.layers.disable(1);
+      try {
+        console.log("Fetching from URL:", `/api/get-signed-url/${modelIdentifier}`);
+        const response = await fetch(`http://localhost:8000/api/get-signed-url/${modelIdentifier}`, {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache',
+            // 'Pragma': 'no-cache'
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      
-      calculateCentroids(gltf.scene, centroidsRef); // Calculate centroids after model load
-      storeOriginalPositions(gltf.scene);
-      setIsModelLoaded(true);
-      const newHierarchyData = extractHierarchy(gltf.scene);
-      setHierarchy(newHierarchyData);
-      }, undefined, (error) => {
-      console.error("Error loading model:", error);
-      
-      // console.log(newHierarchyData);
-      });
-    });
+    
+        const data = await response.json();
+        const signedUrl = data.url;  // Extract the URL from the JSON object
 
-    function extractHierarchy(gltfScene) {
-      let nodeMap = {};
-      let rootMap = {};
     
-      gltfScene.traverse((node) => {
-        // console.log('Node:', node);
-        nodeMap[node.uuid] = {
-          id: node.uuid,
-          name: node.name || 'Unnamed Node',
-          partNumber : node.userData.part_number,
-          parent: node.parent ? node.parent.uuid : null,
-          children: []
-        };
+        if (signedUrl) {
+          console.log(`Signed URL received: ${signedUrl}`);
+          // Your existing logic to remove the current model
+          if (modelRef.current) {
+            console.log("Removing existing model from scene");
+            scene.remove(modelRef.current);
+            modelRef.current = null;
+          }
     
-        // If the node has a parent, add this node as a child to its parent
-        if (node.parent && nodeMap[node.parent.uuid]) {
-          nodeMap[node.parent.uuid].children.push(nodeMap[node.uuid]);
-          // If this node has a parent, it's not a root so ensure it's not in rootMap
-          delete rootMap[node.uuid];
+          // Load the model with the signed URL
+          console.log(`Loading model from URL: ${signedUrl}`);
+          const loader = new GLTFLoader();
+          loader.load(signedUrl, (gltf) => {
+            console.log("Model loaded successfully", gltf);
+            modelRef.current = gltf.scene;
+            scene.add(gltf.scene);
+    
+            // Rest of the logic after loading the model
+            calculateCentroids(gltf.scene, centroidsRef);
+            storeOriginalPositions(gltf.scene);
+            setIsModelLoaded(true);
+            const newHierarchyData = extractHierarchy(gltf.scene);
+            setHierarchy(newHierarchyData);
+    
+          }, undefined, (error) => {
+            console.error("Error loading model:", error);
+          });
         } else {
-          // If this node has no parent, consider it a root candidate
-          rootMap[node.uuid] = nodeMap[node.uuid];
+          console.log("No signed URL received");
         }
-      });
-
-      // Now rootMap contains only nodes that are not children of any other nodes
-      let roots = Object.values(rootMap);
-      // console.log('Unique Root Nodes:', roots);
-      return roots;
-    }
+      } catch (error) {
+        console.error('Error fetching signed URL:', error);
+      }
+    };
     
+    fetchAndLoadModel();
 
     const rgbeLoader = new RGBELoader();
     rgbeLoader.load('/safari_sunset_4k.hdr', function (texture) {
@@ -143,13 +136,44 @@ const Model = ({
     // Cleanup function
     return () => {
       if (modelRef.current) {
-        // console.log("Component unmounting, removing model from scene");
+        console.log("Component unmounting, removing model from scene");
         scene.remove(modelRef.current); // Remove the model from the scene
         
-         // Dispose of the model's resources
+        // Dispose of the model's resources
       }
     };
-  }, [scene, renderer, setHierarchy, modelUrl,setIsModelLoaded, originalPositionsRef]);
+  }, [scene, renderer, setHierarchy, modelIdentifier,setIsModelLoaded, originalPositionsRef]);
+
+  function extractHierarchy(gltfScene) {
+    let nodeMap = {};
+    let rootMap = {};
+  
+    gltfScene.traverse((node) => {
+      // console.log('Node:', node);
+      nodeMap[node.uuid] = {
+        id: node.uuid,
+        name: node.name || 'Unnamed Node',
+        partNumber : node.userData.part_number,
+        parent: node.parent ? node.parent.uuid : null,
+        children: []
+      };
+  
+      // If the node has a parent, add this node as a child to its parent
+      if (node.parent && nodeMap[node.parent.uuid]) {
+        nodeMap[node.parent.uuid].children.push(nodeMap[node.uuid]);
+        // If this node has a parent, it's not a root so ensure it's not in rootMap
+        delete rootMap[node.uuid];
+      } else {
+        // If this node has no parent, consider it a root candidate
+        rootMap[node.uuid] = nodeMap[node.uuid];
+      }
+    });
+
+    // Now rootMap contains only nodes that are not children of any other nodes
+    let roots = Object.values(rootMap);
+    // console.log('Unique Root Nodes:', roots);
+    return roots;
+  }
 
   useEffect(() => {
     // console.log("Visibility update useEffect triggered");
@@ -160,19 +184,6 @@ const Model = ({
         if (object.isMesh) {
           const isVisible = checked.includes(object.uuid);
           object.visible = isVisible;
-          // console.log(`Visibility updated for mesh (UUID: ${object.uuid}): ${isVisible}`);
-            // const isVisible = checked.includes(object.uuid);
-            // console.log(`Object UUID: ${object.uuid}, Is Visible: ${isVisible}`);
-            // object.visible = isVisible;
-            // if (isVisible) {
-            //     // Make visible and raycastable
-            //     object.layers.enable(0);
-            //     object.layers.disable(1);
-            // } else {
-            //     // Make invisible and non-raycastable
-            //     object.layers.disable(0);
-            //     object.layers.enable(1);
-            // }
         }
     });
   }, [scene, checked]);

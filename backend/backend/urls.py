@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
-from database.views import Parts333GViewSet, Parts17GViewSet, PartsSK850ViewSet
+from database.views import Parts333GViewSet, Parts17GViewSet, PartsSK850ViewSet, generate_presigned_url
 
 router = DefaultRouter()
 router.register(r'parts333g', Parts333GViewSet)
@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/parts333g/<str:part_number>/', Parts333GViewSet.as_view({'get': 'retrieve'})),
     path('api/parts17g/<str:part_number>/', Parts17GViewSet.as_view({'get':'retrieve'})),
     path('api/partssk850/<str:part_number>/', PartsSK850ViewSet.as_view({'get':'retrieve'})),
+    path('api/get-signed-url/<str:model_name>/', generate_presigned_url, name='generate-presigned-url'),
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
 ]

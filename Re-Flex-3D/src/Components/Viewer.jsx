@@ -18,12 +18,13 @@ const Viewer = React.memo(({
   setSelectedMesh, 
   onMeshSelect, 
   selectedMesh, 
-  modelUrl,
+  modelIdentifier,
   setModelLoaded,
   checked,
   centroidsRef, 
   originalPositionsRef,
 }) => {
+  console.log("Viewer - Received modelIdentifier:", modelIdentifier);
   // console.log('Viewer component rendering');
   const mountRef = useRef(null);
   const sceneRef = useRef(new THREE.Scene());
@@ -264,7 +265,7 @@ const Viewer = React.memo(({
       controls.removeEventListener('change', () => setCameraMoved(true));
     };
     
-  }, [setSelectedMesh, modelUrl]);
+  }, [setSelectedMesh, modelIdentifier]);
 
   useEffect(() => {
     if (selectedMesh) {
@@ -334,7 +335,7 @@ const Viewer = React.memo(({
         scene={scene} 
         renderer={renderer} 
         setHierarchy={setHierarchyData} 
-        modelUrl={modelUrl}
+        modelIdentifier={modelIdentifier}
         setIsModelLoaded={setModelLoaded}
         explodedView={explodedView}
         centroidsRef={centroidsRef}
