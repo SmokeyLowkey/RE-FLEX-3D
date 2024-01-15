@@ -10,6 +10,7 @@ export default defineConfig({
     include: ['@react-three/drei']
   },
   define:{
-    'process.env.RENDER_BASE_URL': JSON.stringify(process.env.RENDER_BASE_URL)
+    'process.env.VITE_RENDER_BASE_URL': JSON.stringify(process.env.VITE_RENDER_BASE_URL),
+    'process.env.VITE_OPENAI_API_KEY': JSON.stringify(process.env.VITE_OPENAI_API_KEY)
   }
 })

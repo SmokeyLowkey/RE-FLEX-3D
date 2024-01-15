@@ -7,6 +7,7 @@ import Autocomplete from '@mui/lab/Autocomplete';
 import TextField from '@mui/material/TextField';
 
 import Header from './Header';
+import Footer from './Footer';
 import Viewer from './Viewer'; // Adjust the import path as needed
 import MeshDetailsPanel from './DetailPanels';
 
@@ -301,12 +302,13 @@ const ReflexAdvancedDemo = () => {
         </ReflexContainer>
       </ReflexElement>
       
+      <ReflexSplitter {...resizeProps} />
       {/* Footer */}
-      {/* <ReflexElement className="footer" flex={0.1}>
-        <div className="pane-content">
-          <label>Footer (fixed)</label>
+      <ReflexElement className="footer" flex={0.1}>
+        <div className="footer-content">
+          <Footer modelIdentifier={modelIdentifier}/>
         </div>
-      </ReflexElement> */}
+      </ReflexElement>
     </ReflexContainer>
   );
 };

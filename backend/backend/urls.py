@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
-from database.views import Parts333GViewSet, Parts17GViewSet, PartsSK850ViewSet, generate_presigned_url
+from database.views import Parts333GViewSet, Parts17GViewSet, PartsSK850ViewSet, generate_presigned_url, random_part_view
 
 router = DefaultRouter()
 router.register(r'parts333g', Parts333GViewSet)
@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/get-signed-url/<str:model_name>/', generate_presigned_url, name='generate-presigned-url'),
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
+    path('api/random-part/<str:model_name>/', random_part_view, name='random-part'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

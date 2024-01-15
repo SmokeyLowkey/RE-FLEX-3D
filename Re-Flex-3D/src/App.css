@@ -15,12 +15,21 @@
   width: 100vw;
 }
 /* Styles for the header and footer */
-.header, .footer {
+.header {
   top: 10px;
   background-color: #ffffff; /* Dark background for header and footer */
   color: rgb(255, 0, 0); 
   text-align: center;
   padding: 10px 0;
+}
+.footer{
+  text-align: center;
+  color: #070707;
+}
+
+.footer-content{
+  color: #070707;
+  font-size: larger;
 }
 
 /* Styles for the main content area */
