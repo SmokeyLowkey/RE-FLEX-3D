@@ -23,6 +23,7 @@ const Viewer = React.memo(({
   checked,
   centroidsRef, 
   originalPositionsRef,
+  setIsLoading
 }) => {
   // console.log("Viewer - Received modelIdentifier:", modelIdentifier);
   // console.log('Viewer component rendering');
@@ -345,6 +346,7 @@ const Viewer = React.memo(({
         explodedView={explodedView}
         centroidsRef={centroidsRef}
         originalPositionsRef={originalPositionsRef}
+        setIsLoading={setIsLoading}
         />
       )}
       <button onClick={resetPositions}>Reset Positions</button>

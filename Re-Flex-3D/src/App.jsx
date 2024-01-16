@@ -1,15 +1,20 @@
-import React from 'react';
+import React, {useState}from 'react';
 import './App.css';
 import ReflexAdvancedDemo from './Components/FrontPage.jsx'; // Import ReflexAdvancedDemo
-import Viewer from './Components/Viewer';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
+  
   return (
     <div className="App">
-      <ReflexAdvancedDemo /> 
-      {/* <Viewer />  */}
-    </div>
-  );
-}
+    {isLoading && 
+    <div className="loading-overlay">
+      <BeatLoader />
+      </div>}
+         <ReflexAdvancedDemo setIsLoading={setIsLoading} />
+       </div>
+     );
+   };
 
 export default App;

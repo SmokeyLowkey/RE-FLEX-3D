@@ -11,7 +11,7 @@ import Footer from './Footer';
 import Viewer from './Viewer'; // Adjust the import path as needed
 import MeshDetailsPanel from './DetailPanels';
 
-const ReflexAdvancedDemo = () => {
+const ReflexAdvancedDemo = ({setIsLoading}) => {
   // Hooks to manage the resize state
   const [resizing, setResizing] = useState(false);
   const [newHierarchyData, setHierarchyData] = useState([]);
@@ -276,6 +276,7 @@ const ReflexAdvancedDemo = () => {
           <div style={{ width: '100%', height: '100%' }}>
           {modelIdentifier && (
           <Viewer 
+            setIsLoading ={setIsLoading}
             setHierarchyData={setHierarchyDataMemoized}
             onMeshSelect={setSelectedMesh}
             selectedMesh={selectedMesh}
@@ -285,6 +286,7 @@ const ReflexAdvancedDemo = () => {
             centroidsRef={centroidsRef}
             originalPositionsRef = {originalPositionsRef}
             modelIdentifier={modelIdentifier}
+            
             >
            
           </Viewer>

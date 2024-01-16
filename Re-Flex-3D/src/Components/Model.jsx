@@ -14,6 +14,7 @@ const Model = ({
   explodedView,
   originalPositionsRef,
   modelIdentifier,
+  setIsLoading
 }) => {
   const modelRef = useRef(null);  // Add this line
   const centroidsRef = useRef(new Map());
@@ -70,6 +71,7 @@ const Model = ({
       // console.log("Attempting to fetch signed URL for modelIdentifier:", modelIdentifier);
     
       try {
+        setIsLoading(true); //Start loader
         // console.log("Fetching from URL:", `/api/get-signed-url/${modelIdentifier}`);
         const baseUrl = import.meta.env.VITE_RENDER_BASE_URL;
         // console.log("Base URL:", baseUrl);
@@ -111,15 +113,19 @@ const Model = ({
             setIsModelLoaded(true);
             const newHierarchyData = extractHierarchy(gltf.scene);
             setHierarchy(newHierarchyData);
+            setIsLoading(false)
     
           }, undefined, (error) => {
             console.error("Error loading model:", error);
+            setIsLoading(false)
           });
         } else {
           console.log("No signed URL received");
+          setIsLoading(false)
         }
       } catch (error) {
         console.error('Error fetching signed URL:', error);
+        setIsLoading(false)
       }
     };
     
@@ -144,7 +150,7 @@ const Model = ({
         // Dispose of the model's resources
       }
     };
-  }, [scene, renderer, setHierarchy, modelIdentifier,setIsModelLoaded, originalPositionsRef]);
+  }, [scene, renderer, setHierarchy, modelIdentifier,setIsModelLoaded, originalPositionsRef, setIsLoading]);
 
   function extractHierarchy(gltfScene) {
     let nodeMap = {};
