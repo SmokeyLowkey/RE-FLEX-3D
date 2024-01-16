@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
+import gsap from 'gsap';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
@@ -31,12 +32,18 @@ const Viewer = React.memo(({
   const sceneRef = useRef(new THREE.Scene());
   const [scene, setScene] = useState(null);
   const [camera, setCamera] = useState(null);
+  const [camera2, setCamera2] = useState(null);  // Secondary camera (if used)
+  const orbitControlsRef = useRef(null);
   const [cameraMoved, setCameraMoved] = useState(false);
   const [renderer, setRenderer] = useState(null);
   const originalMaterialsRef = useRef(new Map());
   const [selectedMeshUuid, setSelectedMeshUuid] = useState(null);
   const gizmoRef = useRef(null);
   const [explodedView, setExplodedView] = useState(0); // Slider value for exploded view
+
+  // EffectComposer and RenderPass references
+  const composerRef = useRef(null);
+  const renderPassRef = useRef(null);
 
   useEffect(() => {
     // Function to remove existing gizmo
@@ -108,12 +115,41 @@ const Viewer = React.memo(({
       if (selectedObject && selectedObject.userData?.part_number) {
         onPartNumberSelect(selectedObject.userData.part_number);
       }
+      // Check if camera2 is initialized before switching
+      if (camera2) {
+        fitCameraToSelection(camera2, orbitControlsRef.current, [selectedObject]);
+        // switchCamera(camera2);
+        // Animate camera movement
+        gsap.to(camera.position, {
+          x: camera.position.x,
+          y: camera.position.y,
+          z: camera.position.z,
+          duration: 1000,
+          onUpdate: () => {
+              if (orbitControlsRef.current) {
+                  orbitControlsRef.current.update();
+              }
+          }
+        });
+
+        // Optionally, animate changing the controls target as well
+        gsap.to(orbitControlsRef.current.target, {
+          x: selectedObject.position.x,
+          y: selectedObject.position.y,
+          z: selectedObject.position.z,
+          duration: 2
+        });
+    } else {
+        // Fallback to main camera if camera2 is not available
+        fitCameraToSelection(camera, orbitControlsRef.current, [selectedObject]);
+    }
+
     }
   
     setSelectedMeshUuid(meshUuid); // Update local state
     onMeshSelect(meshUuid); // Notify parent component
 
-  }, [onMeshSelect, onPartNumberSelect]);
+  }, [camera, camera2, onMeshSelect, onPartNumberSelect]);
   
   // Helper function to set material opacity
   const setMaterialOpacity = (mesh, uuid, opacity) => {
@@ -160,6 +196,7 @@ const Viewer = React.memo(({
     sceneRef.current = scene;
     const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
     camera.position.set(80, 100, 20);
+    const camera2 = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
 
     const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
     renderer.setClearColor(0xf5f5f5, 0.5); // Set clear color to white
@@ -168,10 +205,13 @@ const Viewer = React.memo(({
 
     setScene(scene);
     setCamera(camera);
+    setCamera2(camera2);
     setRenderer(renderer);
     
     const composer = new EffectComposer(renderer);
+    composerRef.current = composer;
     const renderPass = new RenderPass(scene, camera);
+    renderPassRef.current = renderPass;
     composer.addPass(renderPass);
 
     const outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
@@ -180,6 +220,7 @@ const Viewer = React.memo(({
     composer.addPass(outlinePass);
     
     const controls = new OrbitControls(camera, renderer.domElement);
+    orbitControlsRef.current = controls
     controls.addEventListener('change', () => {
       setCameraMoved(true); // existing logic
 
@@ -272,6 +313,52 @@ const Viewer = React.memo(({
     };
     
   }, [setSelectedMesh, modelIdentifier]);
+
+  
+  function fitCameraToSelection(camera, controls, selection, fitOffset = 1.2) {
+    if (!camera) {
+      console.error("Camera is not available for fitCameraToSelection.");
+      return;
+    }
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+    const box = new THREE.Box3();
+
+    box.makeEmpty();
+    for(const object of selection) {
+      box.expandByObject(object);
+    }
+    
+    box.getSize(size);
+    box.getCenter(center );
+    
+    const maxSize = Math.max(size.x, size.y, size.z);
+    console.log("Max size:", maxSize);
+    if (camera.fov <= 0) {
+      console.error("Camera FOV is not set correctly:", camera.fov);
+      return;
+    }
+    const fitHeightDistance = maxSize / (2 * Math.atan(Math.PI * camera.fov / 360));
+    console.log("Fit height distance:", fitHeightDistance);
+    const fitWidthDistance = fitHeightDistance / camera.aspect;
+    const distance = fitOffset * Math.max(fitHeightDistance, fitWidthDistance);
+    
+    const direction = controls.target.clone()
+      .sub(camera.position)
+      .normalize()
+      .multiplyScalar(distance);
+  
+    controls.maxDistance = distance * 10;
+    controls.target.copy(center);
+    
+    camera.near = distance / 100;
+    camera.far = distance * 100;
+    camera.updateProjectionMatrix();
+  
+    camera.position.copy(controls.target).sub(direction);
+    
+    controls.update();
+  }
 
   useEffect(() => {
     if (selectedMesh) {
