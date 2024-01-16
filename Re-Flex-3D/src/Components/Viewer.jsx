@@ -124,7 +124,7 @@ const Viewer = React.memo(({
           x: camera.position.x,
           y: camera.position.y,
           z: camera.position.z,
-          duration: 1000,
+          duration: 1,
           onUpdate: () => {
               if (orbitControlsRef.current) {
                   orbitControlsRef.current.update();
